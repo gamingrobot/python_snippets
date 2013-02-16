@@ -32,16 +32,17 @@ status, response = http.request(url)
 filelist = []
 
 for link in BeautifulSoup(response, parseOnlyThese=SoupStrainer('a')):
-    if 'href' in link:
+    if link.has_key("href"):
         filelist.append(link['href'])
 
 for filename in filelist:
-    time.sleep(random.random())  # random waits just in case
     try:
+        print "Opening %s" % filename
         remotefile = urlopen(url + filename)
         localfile = open(format_filename(filename), 'wb')
         localfile.write(remotefile.read())
         localfile.close()
         remotefile.close()
+        print "Saved %s" % filename
     except urllib2.HTTPError, e:
         print 'failed' + filename
